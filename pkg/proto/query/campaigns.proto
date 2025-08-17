@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package query;
+
+option go_package = "./query";
+
+import "google/protobuf/timestamp.proto";
+
+// Campaign 서비스 정의
+service QueryService {
+  // 캠페인 목록 조회
+  rpc GetCampaigns(GetCampaignsRequest) returns (GetCampaignsResponse);
+  
+  // 특정 캠페인 조회
+  rpc GetCampaign(GetCampaignRequest) returns (GetCampaignResponse);
+}
+
+// 캠페인 목록 조회 요청
+message GetCampaignsRequest {
+  int32 limit = 1;    // 페이지 크기 (기본값: 10)
+  int32 offset = 2;   // 오프셋 (기본값: 0)
+  int32 state = 3;    // 캠페인 상태 필터 (옵션, 0=전체)
+}
+
+// 캠페인 목록 조회 응답
+message GetCampaignsResponse {
+  repeated Campaign campaigns = 1;
+  int64 total_count = 2;
+}
+
+// 특정 캠페인 조회 요청
+message GetCampaignRequest {
+  int64 campaign_id = 1;
+}
+
+// 특정 캠페인 조회 응답
+message GetCampaignResponse {
+  Campaign campaign = 1;
+  bool found = 2;
+}
+
+// 캠페인 데이터 구조
+message Campaign {
+  int64 id = 1;
+  string address = 2;              // hex string으로 변환된 주소
+  int64 merchant_id = 3;
+  string merchant_name = 4;        // JOIN으로 가져온 merchant 이름
+  string base_price = 5;           // NUMERIC을 string으로 (정밀도 보장)
+  int64 min_qty = 6;
+  google.protobuf.Timestamp lock_start = 7;
+  google.protobuf.Timestamp lock_end = 8;
+  int32 rmax_bps = 9;
+  int32 savefloor_bps = 10;
+  int32 merchant_fee_bps = 11;
+  int32 ops_fee_bps = 12;
+  int32 state = 13;
+  string metadata_uri = 14;
+  google.protobuf.Timestamp created_at = 15;
+} 

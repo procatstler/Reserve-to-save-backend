@@ -2,7 +2,11 @@ module github.com/Reserve-to-save-backend/pkg
 
 go 1.23.1
 
-require github.com/ethereum/go-ethereum v1.16.2
+require (
+	github.com/ethereum/go-ethereum v1.16.2
+	google.golang.org/grpc v1.74.2
+	google.golang.org/protobuf v1.36.7
+)
 
 require (
 	github.com/bits-and-blooms/bitset v1.20.0 // indirect
