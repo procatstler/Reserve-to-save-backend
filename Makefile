@@ -9,6 +9,10 @@ reset-db:
 	rm -rf ./pkg/db/data/*
 	docker compose up -d
 
+build:
+	go build -o api-server/api-server ./api-server/main.go
+	go build -o query-server/query-server ./query-server/main.go
+
 start:
 	make up
 	./api-server/api-server &
