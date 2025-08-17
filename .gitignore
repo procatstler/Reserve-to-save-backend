@@ -1,1 +1,6 @@
+# db data 
 pkg/db/data/*
+
+#keystore files
+pkg/keystore/*
+

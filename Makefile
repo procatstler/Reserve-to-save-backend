@@ -6,5 +6,5 @@ down:
 
 reset-db:
 	docker compose down -v
-	rm -rf ./data/postgres
+	rm -rf ./pkg/db/data/*
 	docker compose up -d

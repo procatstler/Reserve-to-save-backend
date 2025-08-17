@@ -74,3 +74,63 @@ CREATE TABLE rebates (
 
 CREATE INDEX idx_campaign_state ON campaigns(state, lock_end);
 CREATE INDEX idx_participants_user ON participants(user_id, campaign_id);
+
+-- 예시 데이터 INSERT
+-- commnet below if you don't want example data
+
+-- Users 예시 데이터 (5개)
+INSERT INTO users (wallet_address, line_uid, status) VALUES
+  (decode('a1b2c3d4e5f6789012345678901234567890abcd', 'hex'), 'line_user_001', 1),
+  (decode('b2c3d4e5f6789012345678901234567890abcdef', 'hex'), 'line_user_002', 1),
+  (decode('c3d4e5f6789012345678901234567890abcdef01', 'hex'), 'line_user_003', 1),
+  (decode('d4e5f6789012345678901234567890abcdef0123', 'hex'), 'line_user_004', 1),
+  (decode('e5f6789012345678901234567890abcdef012345', 'hex'), 'line_user_005', 1);
+
+-- Merchants 예시 데이터 (2개)
+INSERT INTO merchants (wallet_address, name) VALUES
+  (decode('1234567890abcdef1234567890abcdef12345678', 'hex'), 'merchant1'),
+  (decode('234567890abcdef1234567890abcdef123456789', 'hex'), 'merchant2');
+
+-- Campaigns 예시 데이터 (2개) - merchant_id는 위에서 생성된 merchants를 참조
+INSERT INTO campaigns (
+  address, 
+  merchant_id, 
+  base_price, 
+  min_qty, 
+  lock_start, 
+  lock_end, 
+  rmax_bps, 
+  savefloor_bps, 
+  merchant_fee_bps, 
+  ops_fee_bps, 
+  state, 
+  metadata_uri
+) VALUES
+  (
+    decode('1111111111111111111111111111111111111111', 'hex'),
+    1, -- merchant1의 ID
+    10.500000,
+    100,
+    '2024-01-15 09:00:00+00',
+    '2024-02-15 18:00:00+00',
+    500,  -- 5% rmax
+    200,  -- 2% savefloor
+    300,  -- 3% merchant fee
+    100,  -- 1% ops fee
+    1,    -- active state
+    'https://example.com/campaign1-metadata.json'
+  ),
+  (
+    decode('2222222222222222222222222222222222222222', 'hex'),
+    2, -- merchant2의 ID
+    25.000000,
+    50,
+    '2024-01-20 10:00:00+00',
+    '2024-03-20 20:00:00+00',
+    600,  -- 6% rmax
+    250,  -- 2.5% savefloor
+    400,  -- 4% merchant fee
+    150,  -- 1.5% ops fee
+    1,    -- active state
+    'https://example.com/campaign2-metadata.json'
+  );
