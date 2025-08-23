@@ -1,0 +1,11 @@
+go 1.23.1
+
+use (
+	./api-server
+	./auth-server
+	./batch-server
+	./event-receiver
+	./pkg
+	./query-server
+	./tx-helper
+)

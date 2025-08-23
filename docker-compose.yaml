@@ -1,0 +1,51 @@
+services:
+  # PostgreSQL (정제 데이터 저장 / Query 서버용)
+  postgres:
+    image: postgres:16
+    container_name: local-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydb
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./pkg/db/data/postgres:/var/lib/postgresql/data
+      - ./pkg/db/init-postgres.sql:/docker-entrypoint-initdb.d/init.sql 
+
+  # MongoDB (Raw 이벤트 저장)
+  mongo:
+    image: mongo:7
+    container_name: local-mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./pkg/db/data/mongo:/data/db
+
+  # Redis (Query 서버 캐시 / 세션 저장 가능)
+  redis:
+    image: redis:7
+    container_name: local-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./pkg/db/data/redis:/data
+
+  # Adminer (웹 UI로 DB 접속)
+  adminer:
+    image: adminer:latest
+    container_name: local-adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      - mongo
+
+volumes:
+  postgres_data:
+  mongo_data:
+  redis_data:
