@@ -1,11 +1,16 @@
 module github.com/Reserve-to-save-backend/pkg
 
-go 1.23.1
+go 1.21
 
 require (
-	github.com/ethereum/go-ethereum v1.16.2
-	google.golang.org/grpc v1.74.2
-	google.golang.org/protobuf v1.36.7
+	github.com/ethereum/go-ethereum v1.13.5
+	github.com/go-redis/redis/v8 v8.11.5
+	github.com/golang-jwt/jwt/v4 v4.5.0
+	github.com/google/uuid v1.5.0
+	github.com/jmoiron/sqlx v1.3.5
+	github.com/lib/pq v1.10.9
+	google.golang.org/grpc v1.60.0
+	google.golang.org/protobuf v1.32.0
 )
 
 require (

@@ -1,6 +1,222 @@
-# db data 
-pkg/db/data/*
+# Environment variables
+.env
+.env.*
+!.env.example
+*.env
 
-#keystore files
+# Database data
+pkg/db/data/*
+postgres-data/
+mysql-data/
+redis-data/
+*.sqlite
+*.sqlite3
+*.db
+
+# Keystore files
 pkg/keystore/*
+*.keystore
+*.jks
+
+# Security and Secrets
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+private/
+secrets/
+credentials/
+config/secrets.yml
+config/database.yml
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.sublime-project
+*.sublime-workspace
+.project
+.classpath
+.settings/
+*.iml
+*.ipr
+*.iws
+
+# Go binary and build files
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+/vendor/
+/Godeps/
+go.sum
+*.prof
+*.pprof
+coverage.txt
+coverage.html
+*.cover
+
+# Binary outputs from services
+/auth-server/auth-server
+/api-server/api-server
+/core-server/core-server
+/query-server/query-server
+/batch-server/batch-server
+/tx-helper/tx-helper
+/event-receiver/event-receiver
+/demo/demo_api
+/demo/seed
+
+# Node.js / TypeScript (for all-server-ts)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.npm
+.yarn
+dist/
+build/
+*.log
+logs/
+*.pid
+*.seed
+*.pid.lock
+.cache/
+.parcel-cache/
+.next/
+.nuxt/
+.vuepress/dist/
+.serverless/
+.fusebox/
+.dynamodb/
+.tern-port
+
+# Testing
+*.test
+*.spec
+coverage/
+.nyc_output/
+test-results/
+playwright-report/
+playwright/.cache/
+e2e/videos/
+e2e/screenshots/
+
+# Logs and temporary files
+logs/
+log/
+tmp/
+temp/
+*.tmp
+*.log
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msm
+*.msp
+*.lnk
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
+*~
+.saves
+
+# Documentation build
+docs/_build/
+docs/.sphinx/
+site/
+
+# Python (if any scripts)
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Demo generated files
+/demo/*.pid
+/demo/*.pids
+/tmp/
+
+# Terraform (if used for deployment)
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+terraform.tfvars
+
+# Docker
+docker-compose.override.yml
+
+# Kubernetes
+kubeconfig
+*.kubeconfig
+
+# Miscellaneous
+.history/
+.vscode-test/
+*.vsix
+.yarn-integrity
+.pnp.*
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+# Contract SDK (if it's from external repo)
+/sdk/
+
+# Generated files
+generated/
+gen/
+
+# Local configuration
+config.local.json
+config.local.yml
+settings.local.json
+local.config.*
+
+# Session and cache files
+sessions/
+cache/
+.cache/
+
+# Upload directories
+uploads/
+public/uploads/
+
+# Contract deployment artifacts
+deployments/localhost/
+deployments/*/solcInputs/
+artifacts/
+cache/
+typechain/
+typechain-types/
 

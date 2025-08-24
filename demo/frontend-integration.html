@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>R2S Demo - Frontend Integration</title>
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+        }
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .demo-users {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .user-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            background: #f9f9f9;
+        }
+        .user-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        .user-card p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #666;
+        }
+        .campaigns {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        .campaign-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            background: #f9f9f9;
+        }
+        .campaign-card h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .campaign-info {
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        .campaign-info label {
+            font-weight: bold;
+            color: #667eea;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .status-recruiting {
+            background: #4caf50;
+            color: white;
+        }
+        .status-reached {
+            background: #2196f3;
+            color: white;
+        }
+        .actions {
+            margin-top: 20px;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .tx-builder {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .tx-result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e8f5e9;
+            border-radius: 8px;
+            border: 1px solid #4caf50;
+        }
+        .tx-result pre {
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+        .error {
+            background: #ffebee;
+            border: 1px solid #f44336;
+            color: #c62828;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .info {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            color: #1565c0;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>R2S Demo - Frontend Integration</h1>
+        
+        <div class="section">
+            <h2>System Statistics</h2>
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <div class="stat-value">-</div>
+                    <div class="stat-label">Total Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">-</div>
+                    <div class="stat-label">Active Campaigns</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">-</div>
+                    <div class="stat-label">Total Campaigns</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">-</div>
+                    <div class="stat-label">Total Deposited</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Demo Users</h2>
+            <div class="info">
+                These are test accounts with example.com emails. Use them to test the authentication flow.
+            </div>
+            <div class="demo-users" id="usersContainer">
+                <div class="loading">Loading demo users...</div>
+            </div>
+            <div class="actions">
+                <button onclick="loadDemoUsers()">Refresh Users</button>
+                <button onclick="testAuth()">Test Authentication</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Active Campaigns</h2>
+            <div class="campaigns" id="campaignsContainer">
+                <div class="loading">Loading campaigns...</div>
+            </div>
+            <div class="actions">
+                <button onclick="loadCampaigns()">Refresh Campaigns</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Transaction Builder</h2>
+            <div class="info">
+                Build transactions for campaign participation. These transactions can be signed and sent using MetaMask or other wallets.
+            </div>
+            <div class="tx-builder">
+                <div class="form-group">
+                    <label>Action Type</label>
+                    <select id="txType" onchange="updateTxForm()">
+                        <option value="approve">Approve USDT</option>
+                        <option value="join">Join Campaign</option>
+                        <option value="cancel">Request Cancellation</option>
+                        <option value="info">Get Campaign Info</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>User Address</label>
+                    <input type="text" id="userAddress" placeholder="0x..." value="0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2">
+                </div>
+                
+                <div class="form-group" id="campaignAddressGroup">
+                    <label>Campaign/Spender Address</label>
+                    <input type="text" id="targetAddress" placeholder="0x..." value="0x1234567890123456789012345678901234567890">
+                </div>
+                
+                <div class="form-group" id="amountGroup">
+                    <label>Amount (USDT with 6 decimals)</label>
+                    <input type="text" id="amount" placeholder="1000000" value="50000000">
+                </div>
+                
+                <button onclick="buildTransaction()">Build Transaction</button>
+                <button onclick="estimateGas()">Estimate Gas</button>
+                
+                <div id="txResult"></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>API Endpoints</h2>
+            <div class="info">
+                <strong>Demo API:</strong> http://localhost:3008/demo<br>
+                <strong>TX Helper:</strong> http://localhost:3006/tx<br>
+                <strong>Auth Server:</strong> http://localhost:3001/auth<br>
+                <strong>API Gateway:</strong> http://localhost:3000/api
+            </div>
+            
+            <h3>Quick Test Commands</h3>
+            <pre style="background: #f5f5f5; padding: 15px; border-radius: 8px;">
+# Get demo users
+curl http://localhost:3008/demo/users
+
+# Get campaigns
+curl http://localhost:3008/demo/campaigns
+
+# Get demo auth token
+curl "http://localhost:3008/demo/auth?wallet=0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2"
+
+# Estimate gas price
+curl http://localhost:3006/tx/estimate-gas
+
+# Get campaign info
+curl "http://localhost:3006/tx/campaign-info?address=0x1234567890123456789012345678901234567890"
+            </pre>
+        </div>
+    </div>
+
+    <script>
+        const DEMO_API = 'http://localhost:3008';
+        const TX_HELPER_API = 'http://localhost:3006';
+        
+        // Load demo users
+        async function loadDemoUsers() {
+            try {
+                const response = await fetch(`${DEMO_API}/demo/users`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const container = document.getElementById('usersContainer');
+                    container.innerHTML = data.data.map(user => `
+                        <div class="user-card">
+                            <h3>${user.displayName || 'Anonymous'}</h3>
+                            <p><strong>Wallet:</strong> ${user.wallet}</p>
+                            <p><strong>Email:</strong> ${user.email}</p>
+                            <p><strong>KYC Tier:</strong> ${user.kycTier}</p>
+                            <p><strong>LINE ID:</strong> ${user.lineUserId || 'N/A'}</p>
+                            ${user.testPassword ? `<p><strong>Test Password:</strong> ${user.testPassword}</p>` : ''}
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Failed to load users:', error);
+                document.getElementById('usersContainer').innerHTML = 
+                    '<div class="error">Failed to load demo users. Make sure the demo API is running on port 3008.</div>';
+            }
+        }
+        
+        // Load campaigns
+        async function loadCampaigns() {
+            try {
+                const response = await fetch(`${DEMO_API}/demo/campaigns`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const container = document.getElementById('campaignsContainer');
+                    container.innerHTML = data.data.map(campaign => `
+                        <div class="campaign-card">
+                            <h3>${campaign.title}</h3>
+                            <span class="status-badge status-${campaign.status}">${campaign.status}</span>
+                            <div class="campaign-info">
+                                <p>${campaign.description || 'No description'}</p>
+                            </div>
+                            <div class="campaign-info">
+                                <label>Progress:</label>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${campaign.progress || 0}%"></div>
+                                </div>
+                                <span>${campaign.progress?.toFixed(1) || 0}% (${campaign.currentAmount} / ${campaign.targetAmount} USDT)</span>
+                            </div>
+                            <div class="campaign-info">
+                                <label>Participants:</label> ${campaign.participantCount}
+                            </div>
+                            <div class="campaign-info">
+                                <label>Base Price:</label> ${(parseInt(campaign.basePrice) / 1000000).toFixed(2)} USDT
+                            </div>
+                            <div class="campaign-info">
+                                <label>Discount:</label> ${campaign.discountRate / 100}%
+                            </div>
+                            <div class="campaign-info">
+                                <label>Min Quantity:</label> ${campaign.minQty}
+                            </div>
+                            <div class="campaign-info">
+                                <label>Contract:</label> 
+                                <span style="font-size: 11px; word-break: break-all;">${campaign.chainAddress}</span>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Failed to load campaigns:', error);
+                document.getElementById('campaignsContainer').innerHTML = 
+                    '<div class="error">Failed to load campaigns. Make sure the demo API is running on port 3008.</div>';
+            }
+        }
+        
+        // Load statistics
+        async function loadStats() {
+            try {
+                const response = await fetch(`${DEMO_API}/demo/stats`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const stats = data.data;
+                    document.getElementById('statsGrid').innerHTML = `
+                        <div class="stat-card">
+                            <div class="stat-value">${stats.TotalUsers || 0}</div>
+                            <div class="stat-label">Total Users</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${stats.ActiveCampaigns || 0}</div>
+                            <div class="stat-label">Active Campaigns</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${stats.TotalCampaigns || 0}</div>
+                            <div class="stat-label">Total Campaigns</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${(parseInt(stats.TotalDeposited || 0) / 1000000).toFixed(0)}</div>
+                            <div class="stat-label">Total Deposited (USDT)</div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Failed to load stats:', error);
+            }
+        }
+        
+        // Test authentication
+        async function testAuth() {
+            const wallet = document.getElementById('userAddress').value;
+            if (!wallet) {
+                alert('Please enter a user address first');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${DEMO_API}/demo/auth?wallet=${wallet}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert(`Authentication successful!\n\nAccess Token: ${data.data.accessToken}\n\nRefresh Token: ${data.data.refreshToken}\n\n${data.data.message}`);
+                } else {
+                    alert('Authentication failed: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Auth test failed:', error);
+                alert('Failed to test authentication. Make sure the demo API is running.');
+            }
+        }
+        
+        // Update transaction form based on type
+        function updateTxForm() {
+            const type = document.getElementById('txType').value;
+            const amountGroup = document.getElementById('amountGroup');
+            const campaignGroup = document.getElementById('campaignAddressGroup');
+            
+            if (type === 'info') {
+                amountGroup.style.display = 'none';
+            } else {
+                amountGroup.style.display = 'block';
+            }
+            
+            if (type === 'approve') {
+                campaignGroup.querySelector('label').textContent = 'Spender Address';
+            } else {
+                campaignGroup.querySelector('label').textContent = 'Campaign Address';
+            }
+        }
+        
+        // Build transaction
+        async function buildTransaction() {
+            const type = document.getElementById('txType').value;
+            const userAddress = document.getElementById('userAddress').value;
+            const targetAddress = document.getElementById('targetAddress').value;
+            const amount = document.getElementById('amount').value;
+            const resultDiv = document.getElementById('txResult');
+            
+            let endpoint = '';
+            let body = {};
+            
+            switch(type) {
+                case 'approve':
+                    endpoint = '/tx/approve-usdt';
+                    body = {
+                        userAddress,
+                        spenderAddress: targetAddress,
+                        amount
+                    };
+                    break;
+                case 'join':
+                    endpoint = '/tx/join-campaign';
+                    body = {
+                        userAddress,
+                        campaignAddress: targetAddress,
+                        amount
+                    };
+                    break;
+                case 'cancel':
+                    endpoint = '/tx/request-cancel';
+                    body = {
+                        userAddress,
+                        campaignAddress: targetAddress,
+                        amount
+                    };
+                    break;
+                case 'info':
+                    // GET request for campaign info
+                    try {
+                        const response = await fetch(`${TX_HELPER_API}/tx/campaign-info?address=${targetAddress}`);
+                        const data = await response.json();
+                        
+                        if (data.success) {
+                            resultDiv.innerHTML = `
+                                <div class="tx-result">
+                                    <h4>Campaign Information</h4>
+                                    <pre>${JSON.stringify(data.data, null, 2)}</pre>
+                                </div>
+                            `;
+                        } else {
+                            resultDiv.innerHTML = `<div class="error">Failed: ${data.error}</div>`;
+                        }
+                    } catch (error) {
+                        resultDiv.innerHTML = `<div class="error">Failed to get campaign info: ${error.message}</div>`;
+                    }
+                    return;
+            }
+            
+            try {
+                const response = await fetch(`${TX_HELPER_API}${endpoint}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    const tx = data.data.transaction;
+                    resultDiv.innerHTML = `
+                        <div class="tx-result">
+                            <h4>Transaction Built Successfully</h4>
+                            <p>${data.data.message}</p>
+                            <pre>${JSON.stringify(tx, null, 2)}</pre>
+                            <button onclick="copyToClipboard('${JSON.stringify(tx)}')">Copy Transaction</button>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">Failed: ${data.error}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">Failed to build transaction: ${error.message}<br>Make sure the TX Helper is running on port 3006.</div>`;
+            }
+        }
+        
+        // Estimate gas
+        async function estimateGas() {
+            const resultDiv = document.getElementById('txResult');
+            
+            try {
+                const response = await fetch(`${TX_HELPER_API}/tx/estimate-gas`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="tx-result">
+                            <h4>Gas Estimation</h4>
+                            <p><strong>Gas Price:</strong> ${data.data.gasPrice} wei</p>
+                            <p><strong>Gas Price (Gwei):</strong> ${data.data.gasPriceGwei} Gwei</p>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">Failed: ${data.error}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">Failed to estimate gas: ${error.message}</div>`;
+            }
+        }
+        
+        // Copy to clipboard
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Transaction copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+            });
+        }
+        
+        // Initialize on load
+        window.onload = function() {
+            loadStats();
+            loadDemoUsers();
+            loadCampaigns();
+            
+            // Refresh stats every 10 seconds
+            setInterval(loadStats, 10000);
+        };
+    </script>
+</body>
+</html>

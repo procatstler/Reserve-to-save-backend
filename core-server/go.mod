@@ -1,12 +1,10 @@
-module github.com/Reserve-to-save-backend/auth-server
+module github.com/Reserve-to-save-backend/core-server
 
 go 1.21
 
 require (
-	github.com/ethereum/go-ethereum v1.13.5
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-redis/redis/v8 v8.11.5
-	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/google/uuid v1.5.0
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/joho/godotenv v1.5.1
